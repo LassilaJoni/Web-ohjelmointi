@@ -2,8 +2,6 @@ import { useState, useEffect } from 'react'
 import Form from './components/Form'
 import Personlist from './components/Personlist'
 import axios from 'axios'
-import personService from './services/persons'
-import Notification from './components/Notification'
 
 const App = () => {
 
@@ -12,13 +10,14 @@ const App = () => {
   ]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState("")
-  const [message, setMessage] = useState(null)
 
   useEffect(() => {
-    personService
-      .getAll()
+    console.log('effect')
+    axios
+      .get('http://localhost:3001/persons')
       .then(response => {
-       setPersons(response)
+        console.log('promise fulfilled')
+        setPersons(response.data)
       })
   }, [])
 
@@ -32,41 +31,17 @@ const App = () => {
 
     const alreadyAdded = persons.find(person => person.name.toUpperCase() === newName.toUpperCase())
     alreadyAdded ? alert(`${newName} is already added to phonebook`)
-    : personService
-      .create(nameObject)
-      .then(response => {
-        setPersons(persons.concat(response))
-      })
-      .catch(error => {
-        console.log("Error in adding new name", error)
-      }
-      )
+    : axios
+    .post('http://localhost:3001/persons', nameObject)
+    .then(response => {
+      setPersons(persons.concat(response.data))
+    })
 
-      setMessage(`Added ${newName}`)
-      setTimeout(() => {
-        setMessage(null)
-      }, 3000)
-      
+
+    //setPersons(persons.concat(nameObject))
     setNewName("")
     setNewNumber("")
   }
-
-  const deletePerson = (id, name) => {
-    if(window.confirm("Delete " + name + "?")) {
-      personService
-        .deletePerson(id)
-        .then(response => {
-          setPersons(persons.filter(person => person.id !== id))
-          setMessage(`Deleted ${name}`)
-          setTimeout(() => {
-            setMessage(null)
-          }, 3000)
-        })
-
-
-      
-  }
-}
 
   const handleNameChange = (event) => {
     console.log("handle", event.target.value)
@@ -83,7 +58,6 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={message} />
       <Form 
       addName={addName}
       newName={newName}
@@ -92,10 +66,13 @@ const App = () => {
       handleNumberChange={handleNumberChange}
       />
       <h2>Numbers</h2>
-      <Personlist persons={persons} deletePerson={deletePerson}/>
+      <Personlist persons={persons} />
     </div>
   )
 
 }
 
 export default App
+
+
+

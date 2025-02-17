@@ -3,7 +3,6 @@ import Form from './components/Form'
 import Personlist from './components/Personlist'
 import axios from 'axios'
 import personService from './services/persons'
-import Notification from './components/Notification'
 
 const App = () => {
 
@@ -12,7 +11,6 @@ const App = () => {
   ]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState("")
-  const [message, setMessage] = useState(null)
 
   useEffect(() => {
     personService
@@ -37,36 +35,10 @@ const App = () => {
       .then(response => {
         setPersons(persons.concat(response))
       })
-      .catch(error => {
-        console.log("Error in adding new name", error)
-      }
-      )
-
-      setMessage(`Added ${newName}`)
-      setTimeout(() => {
-        setMessage(null)
-      }, 3000)
-      
+    
     setNewName("")
     setNewNumber("")
   }
-
-  const deletePerson = (id, name) => {
-    if(window.confirm("Delete " + name + "?")) {
-      personService
-        .deletePerson(id)
-        .then(response => {
-          setPersons(persons.filter(person => person.id !== id))
-          setMessage(`Deleted ${name}`)
-          setTimeout(() => {
-            setMessage(null)
-          }, 3000)
-        })
-
-
-      
-  }
-}
 
   const handleNameChange = (event) => {
     console.log("handle", event.target.value)
@@ -83,7 +55,6 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={message} />
       <Form 
       addName={addName}
       newName={newName}
@@ -92,10 +63,13 @@ const App = () => {
       handleNumberChange={handleNumberChange}
       />
       <h2>Numbers</h2>
-      <Personlist persons={persons} deletePerson={deletePerson}/>
+      <Personlist persons={persons} />
     </div>
   )
 
 }
 
 export default App
+
+
+

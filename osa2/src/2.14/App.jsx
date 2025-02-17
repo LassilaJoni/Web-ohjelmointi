@@ -3,7 +3,6 @@ import Form from './components/Form'
 import Personlist from './components/Personlist'
 import axios from 'axios'
 import personService from './services/persons'
-import Notification from './components/Notification'
 
 const App = () => {
 
@@ -12,7 +11,6 @@ const App = () => {
   ]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState("")
-  const [message, setMessage] = useState(null)
 
   useEffect(() => {
     personService
@@ -41,12 +39,7 @@ const App = () => {
         console.log("Error in adding new name", error)
       }
       )
-
-      setMessage(`Added ${newName}`)
-      setTimeout(() => {
-        setMessage(null)
-      }, 3000)
-      
+    
     setNewName("")
     setNewNumber("")
   }
@@ -57,13 +50,7 @@ const App = () => {
         .deletePerson(id)
         .then(response => {
           setPersons(persons.filter(person => person.id !== id))
-          setMessage(`Deleted ${name}`)
-          setTimeout(() => {
-            setMessage(null)
-          }, 3000)
         })
-
-
       
   }
 }
@@ -83,7 +70,6 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={message} />
       <Form 
       addName={addName}
       newName={newName}
