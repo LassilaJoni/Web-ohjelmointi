@@ -1,3 +1,3 @@
-# DTEK2072
+University Of Helsinki - Full Stack Course
 
-npm create vite@latest osa2 -- --template react
+npm create vite@latest osa# -- --template react
